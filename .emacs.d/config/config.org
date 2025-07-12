@@ -14,6 +14,10 @@
   (setq inhibit-startup-message t
         initial-scratch-message "")
 #+end_src
+** シンボリックリンクを常に開く
+#+begin_src emacs-lisp
+  (setq-default find-file-visit-truename t)
+#+end_src
 ** 行番号を表示する
 #+begin_src emacs-lisp
   (global-display-line-numbers-mode 1)
