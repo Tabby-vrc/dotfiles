@@ -44,37 +44,17 @@
 (add-hook 'after-init-hook #'elpaca-process-queues)
 (elpaca `(,@elpaca-order))
 
-;; <leaf-install-code>
-(eval-and-compile
-  (customize-set-variable
-   'package-archives '(("org" . "https://orgmode.org/elpa/")
-                       ("melpa" . "https://melpa.org/packages/")
-                       ("gnu" . "https://elpa.gnu.org/packages/")))
-  (package-initialize)
-  (unless (package-installed-p 'leaf)
-    (package-refresh-contents)
-    (package-install 'leaf))
-
-  (leaf leaf-keywords
-    :ensure t
-    :config
-    ;; initialize leaf-keywords.el
-    (leaf-keywords-init)))
-;; </leaf-install-code>
-
-(leaf leaf-tree
-  :ensure t
-  :custom ((imenu-list-size . 30)
-             (imenu-list-position . 'left)))
-(leaf leaf-convert :ensure t)
-(leaf macrostep
-  :ensure t
-  :bind (("C-c e" . macrostep-expand)))
+;; leafセットアップ
+(elpaca leaf)
+(elpaca leaf-keywords)
+(elpaca-wait)
+(leaf-keywords-init)
 
 ;; org-babelファイルの生成・読み込み
-(eval-when-compile
-  (require 'org)
-  (org-babel-tangle-file (expand-file-name "config/config.org" user-emacs-directory)))
+(elpaca 'org)
+(elpaca-wait)
+(org-babel-load-file
+  (expand-file-name "config/config.org" user-emacs-directory))
 ;  (byte-compile-file (expand-file-name "config.el" user-emacs-directory)))
 
 ;;; init.el ends here

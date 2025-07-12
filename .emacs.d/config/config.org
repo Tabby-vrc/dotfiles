@@ -1,0 +1,158 @@
+#+TITLE: config.el
+#+AUTHOR: Tabby
+#+STARTUP: indent
+#+STARTUP: content
+#+BABEL: :cache yes :tangle no :noweb yes
+
+* Emacs基本設定
+** デバッグ情報を有効にする
+#+begin_src emacs-lisp
+  (setq debug-on-error t)
+#+end_src
+** スタートアップメッセージを無効にする
+#+begin_src emacs-lisp
+  (setq inhibit-startup-message t
+        initial-scratch-message "")
+#+end_src
+** 行番号を表示する
+#+begin_src emacs-lisp
+  (global-display-line-numbers-mode 1)
+#+end_src
+** ビープ音を無効にする
+#+begin_src emacs-lisp
+  (setq ring-bell-function 'ignore
+        visible-bell nil)
+#+end_src
+** カーソルの点滅を無効にする（動いていない）
+#+begin_src emacs-lisp
+  (with-eval-after-load 'frame
+    (blink-cursor-mode -1))
+#+end_src
+** カーソル行をハイライトする
+#+begin_src emacs-lisp
+  (global-hl-line-mode 1)
+#+end_src
+** yes/noをy/nに簡略化する
+#+begin_src emacs-lisp
+  (defalias 'yes-or-no-p 'y-or-n-p)
+#+end_src
+** C-hをバックスペースに変更する
+#+begin_src emacs-lisp
+  (global-set-key (kbd "C-h") 'delete-backward-char)
+  (global-set-key (kbd "<f1>") 'help-command)
+#+end_src
+** C-zのsuspend機能を無効にする
+#+begin_src emacs-lisp
+  (global-unset-key (kbd "C-z"))
+#+end_src
+** orgをモダンにする
+#+begin_src emacs-lisp
+  (leaf org-modern
+    :elpaca t
+    :hook (org-mode . org-modern-mode)
+    :config
+    (add-hook 'org-mode-hook #'org-indent-mode))
+#+end_src
+* UI設定
+** Nordテーマを有効にする
+#+begin_src emacs-lisp
+  (leaf nord-theme
+    :elpaca t
+    :custom
+    (nord-uniform-mode-lines . t)
+    :config
+    (load-theme 'nord t)
+    (setq nord-region-highlight "frost")
+    ;;(setq nord-region-highlight "snowstorm")
+    (custom-theme-set-faces ;; コメント色をnord2へ変更
+     'nord
+     '(font-lock-comment-face
+       ((t (:foreground "#a3be8c"))))
+     '(font-lock-comment-delimiter-face
+       ((t (:foreground "#a3be8c"))))))
+#+end_src
+** nerd-iconsを導入する
+別途 'M-x nerd-icons-install-fonts' の実行が必要
+#+begin_src emacs-lisp
+  (leaf nerd-icons
+    :elpaca t)
+  (leaf nerd-icons-corfu
+    :elpaca t
+    :after corfu nerd-icons
+    :config
+    (add-to-list 'corfu-margin-formatters #'nerd-icons-corfu-formatter))
+#+end_src
+* 補完機能
+** vertico 補完インターフェース
+#+begin_src emacs-lisp
+  (leaf vertico
+    :elpaca t
+    :config
+    (setq vertico-resize nil
+          vertico-count 20
+          vertico-cycle t)
+    (vertico-mode +1))
+#+end_src
+** curfu 補完パッケージ
+#+begin_src emacs-lisp
+  (leaf corfu
+    :elpaca t
+    :config
+    (setq corfu-cycle t
+  	corfu-auto t
+  	corfu-auto-delay 0.0
+  	corfu-auto-prefix 2
+  	corfu-on-exact-match 'shw)
+    (global-corfu-mode +1)
+    (corfu-popupinfo-mode +1))
+  (leaf corfu-terminal
+    :elpaca t
+    :unless (display-graphic-p)
+    :config
+    (corfu-terminal-mode +1))
+#+end_src
+** consult 補完候補提供
+#+begin_src emacs-lisp
+  (leaf consult
+    :elpaca t
+    :bind
+    (;; バッファ・ファイル操作
+     ("C-x b" . consult-buffer)
+     ("C-x p b" . consult-project-buffer)
+     ;; 検索・ナビゲーション
+     ("C-s" . consult-line)
+     ("M-g g" . consult-goto-line)
+     ("M-g o" . consult-outline)
+     ("M-g i" . consult-imenu)))
+  (leaf consult-dir
+    :after consult
+    :elpaca t)
+#+end_src
+** orderless 順序不問
+#+begin_src emacs-lisp
+  (leaf orderless
+    :elpaca t
+    :config
+    (setq completion-styles '(orderless basic)
+          completion-category-defaults nil
+          completion-category-overrides nil))
+#+end_src
+** marginalia 追加情報
+#+begin_src emacs-lisp
+  (leaf marginalia
+    :elpaca t
+    :config
+    (marginalia-mode +1))
+#+end_src
+** which-key キーバインドの可視化
+#+begin_src emacs-lisp
+  (leaf which-key
+    :elpaca t
+    :config
+    (which-key-mode +1))
+#+end_src
+* プログラミング設定
+#+begin_src emacs-lisp
+
+#+end_src
+* fotter

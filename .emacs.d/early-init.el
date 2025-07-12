@@ -19,7 +19,7 @@
 ;; 初期化後にガベージコレクション設定を戻す
 (add-hook 'emacs-startup-hook
           (lambda ()
-            (setq gc-cons-threshold 800000
+            (setq gc-cons-threshold (* 16 1024 1024)
                   gc-cons-percentage 0.1)))
 
 ;;; early-init.el ends here
