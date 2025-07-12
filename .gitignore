@@ -6,3 +6,5 @@
 !.emacs.d/early-init.el
 !.emacs.d/config/config.org
 
+!.tmux.conf
+
