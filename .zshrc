@@ -30,6 +30,7 @@ export PATH="$HOME/.local/bin:$PATH"
 export PATH="$HOME/go/bin:$PATH"
 export PATH="$HOME/git/omnisharp-linux-x64-net6.0:$PATH"
 export PATH="$HOME/git/netcoredbg-linux-amd64:$PATH"
+export PATH="$HOME/.local/bin:$PATH"
 
 eval "$(starship init zsh)"
 eval "$(zoxide init zsh)"
