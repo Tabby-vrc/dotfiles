@@ -22,6 +22,10 @@
 #+begin_src emacs-lisp
   (global-display-line-numbers-mode 1)
 #+end_src
+** 行番号を相対表示する
+#+begin_src emacs-lisp
+  (setq display-line-numbers-type 'relative)
+#+end_src
 ** ビープ音を無効にする
 #+begin_src emacs-lisp
   (setq ring-bell-function 'ignore
@@ -49,13 +53,43 @@
 #+begin_src emacs-lisp
   (global-unset-key (kbd "C-z"))
 #+end_src
-** orgをモダンにする
+** Evil Vim風キーコンフィグ（Emacs移動キーとの共存）
 #+begin_src emacs-lisp
-  (leaf org-modern
+  (leaf evil
     :elpaca t
-    :hook (org-mode . org-modern-mode)
     :config
-    (add-hook 'org-mode-hook #'org-indent-mode))
+    (setq evil-want-integration t)
+    (setq evil-want-keybinding nil)
+    (setq evil-want-C-u-scroll t)
+    ;; Emacsの基本移動キーを保持する設定
+    (setq evil-want-C-i-jump nil)  ; Tab の動作を保持
+    (setq evil-disable-insert-state-bindings t)  ; Insert state で Emacs キーを有効
+    (evil-mode 1)
+    
+    ;; Normal stateでEvilの競合するキーバインドを無効化
+    (define-key evil-normal-state-map (kbd "C-n") nil)
+    (define-key evil-normal-state-map (kbd "C-p") nil)
+    
+    ;; 全ての主要stateでEmacs移動キーを有効化
+    (dolist (state '(normal insert visual emacs))
+      (evil-define-key state 'global
+        (kbd "C-f") 'forward-char
+        (kbd "C-b") 'backward-char
+        (kbd "C-n") 'next-line
+        (kbd "C-p") 'previous-line
+        (kbd "C-a") 'beginning-of-line
+        (kbd "C-e") 'end-of-line))
+    
+    ;; Insert stateにのみ追加のEmacs編集キーを有効化
+    (evil-define-key 'insert 'global
+      (kbd "C-k") 'kill-line
+      (kbd "C-d") 'delete-char))
+    
+  (leaf evil-collection
+    :after evil
+    :elpaca t
+    :config
+    (evil-collection-init))
 #+end_src
 * UI設定
 ** Nordテーマを有効にする
