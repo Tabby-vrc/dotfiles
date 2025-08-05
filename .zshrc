@@ -28,6 +28,8 @@ export NVM_DIR="$HOME/.nvm"
 # PATH設定
 export PATH="$HOME/.local/bin:$PATH"
 export PATH="$HOME/go/bin:$PATH"
+export PATH="$HOME/git/omnisharp-linux-x64-net6.0:$PATH"
+export PATH="$HOME/git/netcoredbg-linux-amd64:$PATH"
 
 eval "$(starship init zsh)"
 eval "$(zoxide init zsh)"

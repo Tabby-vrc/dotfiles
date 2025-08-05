@@ -44,6 +44,15 @@
 #+begin_src emacs-lisp
   (defalias 'yes-or-no-p 'y-or-n-p)
 #+end_src
+** orgをモダンにする
+#+begin_src emacs-lisp
+  (leaf org-modern
+    :elpaca t
+    :hook (org-mode . org-modern-mode)
+    :config
+    (add-hook 'org-mode-hook #'org-indent-mode))
+#+end_src
+* キーコンフィグ
 ** C-hをバックスペースに変更する
 #+begin_src emacs-lisp
   (global-set-key (kbd "C-h") 'delete-backward-char)
@@ -131,7 +140,7 @@
           vertico-cycle t)
     (vertico-mode +1))
 #+end_src
-** curfu 補完パッケージ
+** corfu 補完パッケージ
 #+begin_src emacs-lisp
   (leaf corfu
     :elpaca t
@@ -148,6 +157,11 @@
     :unless (display-graphic-p)
     :config
     (corfu-terminal-mode +1))
+#+end_src
+** cape
+#+begin_src emacs-lisp
+  (leaf cape
+    :elpaca t)
 #+end_src
 ** consult 補完候補提供
 #+begin_src emacs-lisp
@@ -190,7 +204,44 @@
     (which-key-mode +1))
 #+end_src
 * プログラミング設定
+** eglot + omnisharp による C# 開発環境
 #+begin_src emacs-lisp
+  ;; eglotの設定（Emacs 29+では標準搭載）
+  (with-eval-after-load 'eglot
+    ;; emacs-nw でドキュメントを*help*バッファに表示
+    (setq eglot-put-doc-in-help-buffer t)
+    
+    ;; メタデータファイルへの接続エラーを抑制
+    (setq eglot-connect-timeout 30)
+    (setq eglot-sync-connect 1)
+    
+    ;; omnisharp-roslynサーバーをcsharp-modeに紐付け
+    (add-to-list 'eglot-server-programs
+                 '(csharp-mode . ("omnisharp-roslyn" "--languageserver" "--hostPID" "0"))))
 
+  ;; csharp-modeフックでeglotを自動起動
+  (add-hook 'csharp-mode-hook #'eglot-ensure)
+
+  ;; メタデータファイルへの定義ジャンプを制御
+  (defun my-eglot-filter-definitions (orig-fun &rest args)
+    "メタデータファイルへのジャンプを制御し、より有用な情報を提供"
+    (condition-case err
+        (let ((result (apply orig-fun args)))
+          ;; 結果がメタデータファイルかチェック
+          (when result
+            (let ((current-symbol (symbol-at-point)))
+              (when (and current-symbol 
+                        (string-match-p "^System\\." (symbol-name current-symbol)))
+                (message "System.%s はー.NETライブラリのクラスです。詳細はMicrosoft Docsを参照してください。" 
+                        (substring (symbol-name current-symbol) 7))
+                ;; メタデータファイルを開かずに終了
+                nil)))
+          result)
+      (error
+       (when (string-match-p "Project.*is gone" (error-message-string err))
+         (message ".NETライブラリの定義ジャンプは制限されています")
+         nil))))
+  
+  (advice-add 'xref-find-definitions :around #'my-eglot-filter-definitions)
 #+end_src
 * fotter
