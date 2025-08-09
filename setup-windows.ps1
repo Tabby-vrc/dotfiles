@@ -68,16 +68,56 @@ function Set-ConfigFile {
     }
     
     if (Test-Path $Target) {
-        if ($Force) {
-            if ($DryRun) {
-                Write-Host "[DRY RUN] 既存ファイル削除: $Target" -ForegroundColor Yellow
+        # スマートチェック: 既存の設定が正しいかどうかを確認
+        $needsUpdate = $false
+        $currentType = "不明"
+        
+        try {
+            $item = Get-Item $Target -Force
+            
+            if ($item.LinkType -eq "SymbolicLink") {
+                $currentType = "シンボリックリンク"
+                $currentTarget = $item.Target
+                
+                # 相対パスを絶対パスに変換して比較
+                $resolvedTarget = if ([System.IO.Path]::IsPathRooted($currentTarget)) { 
+                    $currentTarget 
+                } else { 
+                    [System.IO.Path]::GetFullPath((Join-Path (Split-Path $Target) $currentTarget))
+                }
+                $resolvedSource = [System.IO.Path]::GetFullPath($Source)
+                
+                if ($resolvedTarget -eq $resolvedSource) {
+                    Write-Host "✓ $Description は既に正しく設定されています ($currentType)" -ForegroundColor Green
+                    return
+                } else {
+                    $needsUpdate = $true
+                    Write-Host "! $Description のリンク先が違います: $currentTarget -> $Source" -ForegroundColor Yellow
+                }
+            } elseif ($item.PSIsContainer) {
+                $currentType = "ディレクトリ"
+                $needsUpdate = $true
             } else {
-                Remove-Item $Target -Force -Recurse
-                Write-Host "既存ファイル削除: $Target" -ForegroundColor Yellow
+                $currentType = "ファイル"
+                $needsUpdate = $true
             }
-        } else {
-            Write-Warning "$Description は既に存在します。-Force オプションで上書きできます: $Target"
-            return
+        } catch {
+            $needsUpdate = $true
+            Write-Host "! $Description の確認中にエラー: $_" -ForegroundColor Yellow
+        }
+        
+        if ($needsUpdate) {
+            if ($Force) {
+                if ($DryRun) {
+                    Write-Host "[DRY RUN] 既存の$currentType を削除: $Target" -ForegroundColor Yellow
+                } else {
+                    Remove-Item $Target -Force -Recurse
+                    Write-Host "既存の$currentType を削除: $Target" -ForegroundColor Yellow
+                }
+            } else {
+                Write-Warning "$Description は既に存在します ($currentType)。-Force オプションで上書きできます: $Target"
+                return
+            }
         }
     }
     
