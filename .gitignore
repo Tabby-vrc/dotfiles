@@ -14,5 +14,7 @@
 !nvim/.neoconf.json
 !nvim/.gitignore
 !Microsoft.PowerShell_profile.ps1
+!setup-windows.ps1
+!install-tools-windows.ps1
 !starship.toml
 
