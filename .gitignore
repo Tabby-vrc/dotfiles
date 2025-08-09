@@ -13,5 +13,6 @@
 !nvim/lazyvim.json
 !nvim/.neoconf.json
 !nvim/.gitignore
+!Microsoft.PowerShell_profile.ps1
 !starship.toml
 
