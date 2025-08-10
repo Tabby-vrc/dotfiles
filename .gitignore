@@ -13,6 +13,7 @@
 !nvim/lazyvim.json
 !nvim/.neoconf.json
 !nvim/.gitignore
+!winfetch/config.ps1
 !Microsoft.PowerShell_profile.ps1
 !setup-windows.ps1
 !install-tools-windows.ps1
