@@ -19,3 +19,11 @@
 !install-tools-windows.ps1
 !starship.toml
 
+# Claude Code
+!.claude/
+!.claude/settings.json
+!.claude/themes/
+!.claude/themes/catppuccin-macchiato.json
+!.claude/hooks/
+!.claude/hooks/notify.py
+!.claude/hooks/run_hook.ps1

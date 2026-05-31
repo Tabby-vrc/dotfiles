@@ -1,0 +1,83 @@
+{
+  "env": {
+    "CLAUDE_CODE_NO_FLICKER": "1"
+  },
+  "permissions": {
+    "allow": [
+      "Read",
+      "Grep",
+      "Glob",
+      "Bash(git status:*)",
+      "Bash(git diff:*)",
+      "Bash(git log:*)",
+      "Bash(git branch:*)",
+      "Bash(git show:*)",
+      "Bash(git remote:*)",
+      "Bash(git config --get:*)",
+      "Bash(svn status:*)",
+      "Bash(svn st:*)",
+      "Bash(svn diff:*)",
+      "Bash(svn di:*)",
+      "Bash(svn log:*)",
+      "Bash(svn info:*)",
+      "Bash(svn list:*)",
+      "Bash(svn ls:*)",
+      "Bash(svn cat:*)",
+      "Bash(svn blame:*)",
+      "Bash(svn annotate:*)",
+      "Bash(svn ann:*)",
+      "Bash(svn praise:*)",
+      "Bash(svn propget:*)",
+      "Bash(svn pg:*)",
+      "Bash(svn proplist:*)",
+      "Bash(svn pl:*)",
+      "Bash(ls:*)",
+      "Bash(pwd)",
+      "Bash(cat:*)",
+      "Bash(head:*)",
+      "Bash(tail:*)",
+      "Bash(which:*)",
+      "Bash(echo:*)",
+      "PowerShell(Get-*)",
+      "PowerShell(Test-Path:*)",
+      "PowerShell(Resolve-Path:*)",
+      "PowerShell(Select-String:*)",
+      "PowerShell(Measure-Object:*)"
+    ]
+  },
+  "hooks": {
+    "Stop": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "cmd /c powershell -File %USERPROFILE%\\.claude\\hooks\\run_hook.ps1 stop"
+          }
+        ]
+      }
+    ],
+    "Notification": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "cmd /c powershell -File %USERPROFILE%\\.claude\\hooks\\run_hook.ps1 notification"
+          }
+        ]
+      }
+    ]
+  },
+  "statusLine": {
+    "type": "command",
+    "command": "npx -y ccstatusline@latest",
+    "padding": 0,
+    "refreshInterval": 10
+  },
+  "language": "Japanese",
+  "alwaysThinkingEnabled": false,
+  "effortLevel": "high",
+  "theme": "custom:catppuccin-macchiato",
+  "editorMode": "normal"
+}
